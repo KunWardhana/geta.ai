@@ -5,3 +5,8 @@ langchain_chroma
 langchain_openai
 Flask
 flask-cors
+pandas
+unstructured 
+openpyxl
+networkx
+langchain-community

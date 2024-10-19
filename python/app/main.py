@@ -1,7 +1,7 @@
 import mysql.connector
 from flask import Flask, request, jsonify
 from langchain import PromptTemplate
-from lib.gen_chain import get_sql_chain, transform_query_result_to_sentence
+from lib.gen_chain import get_sql_chain, transform_query_result_to_sentence, classify_question, general_question, analyze_from_excel
 from flask_cors import CORS
 import chromadb.api
 
@@ -26,42 +26,6 @@ def test_mysql_connection(query, question):
         )
         if connection.is_connected():
             cursor = connection.cursor()
-
-            # Create the employee table
-            create_table_query = """
-            CREATE TABLE IF NOT EXISTS employee (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(255) NOT NULL,
-                salary DECIMAL(10, 2) NOT NULL,
-                address VARCHAR(255) NOT NULL
-            );
-            """
-            cursor.execute(create_table_query)
-            print("Employee table created successfully.")
-
-            # Populate the employee table with sample data
-            insert_query = """
-            INSERT INTO employee (name, salary, address)
-            VALUES (%s, %s, %s)
-            """
-            employees = [
-                ('Alice Johnson', 50000.00, '123 Main St'),
-                ('Bob Smith', 60000.00, '456 Oak St'),
-                ('Carol White', 55000.00, '789 Pine St')
-            ]
-            cursor.executemany(insert_query, employees)
-            # connection.commit()  # Commit the changes to the database
-
-            # print(f"{cursor.rowcount} records inserted successfully into employee table.")
-
-            # Check and display the connected database
-            # cursor.execute("SELECT DATABASE();")
-            # record = cursor.fetchone()
-            # print(f"Connected to MySQL database: {record[0]}")
-
-            # Retrieve and display the data from the employee table
-            # cursor.execute("SELECT * FROM employee;")
-            # test query from llm translate
             cursor.execute(query)
             rows = cursor.fetchall()
             print("Employee records:")
@@ -85,14 +49,23 @@ def api_test_mysql_connection():
     chromadb.api.client.SharedSystemClient.clear_system_cache()
     data = request.get_json()
     question = data.get('question', QUESTION_TEST)
-    try:
-        output = test_mysql_connection(
-            get_sql_chain(openai_api_key=OPENAI_API_KEY, question=question), question
-        )
-        return jsonify(str(output.content)), 200
-    except Exception as e:
-        # Tangkap semua error dan tampilkan pesan error
-        return jsonify({"error": str(e)}), 500
+    question_type = classify_question(openai_api_key=OPENAI_API_KEY, question=question)
+    print(question_type.content)
+    # toket = question_type.content.split(": ")[1]
+    toket = question_type.content
+    # print(question_type.content)
+    if toket  == 'general':
+        return jsonify(str(general_question(openai_api_key=OPENAI_API_KEY, question=question).content))
+    else:
+        try:
+            # output = test_mysql_connection(
+            #     get_sql_chain(openai_api_key=OPENAI_API_KEY, question=question), question
+            # )
+            output = analyze_from_excel(openai_api_key=OPENAI_API_KEY, question=question)
+            return jsonify(str(output['result'])), 200
+        except Exception as e:
+            # Tangkap semua error dan tampilkan pesan error
+            return jsonify({"error": str(e)}), 500
 
 @app.route('/test_langchain', methods=['GET'])
 def api_test_langchain():
@@ -102,4 +75,4 @@ def api_test_langchain():
     return jsonify({"result": result}), 200
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5001)
