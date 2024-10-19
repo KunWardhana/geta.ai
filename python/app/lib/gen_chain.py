@@ -81,3 +81,29 @@ def get_sql_chain(openai_api_key,question):
     sql_query = sql_query_chain.invoke(question)
 
     return sql_query
+
+
+def transform_query_result_to_sentence(openai_api_key, executed_query_result, context):
+    from langchain_openai import ChatOpenAI
+    from langchain_core.prompts import ChatPromptTemplate
+    import os
+
+    INSTRUCTION = """You are provided with the context of the user's question and the output of an executed SQL query. 
+    Your task is to transform this output into a clear and concise sentence or paragraph that provides the information requested by the user.
+    Be sure to include relevant information from the context to ensure the response is meaningful and clear.
+    """
+
+    prompt_message = f"{INSTRUCTION}\nContext: {context}\nSQL Query Output: {executed_query_result}\n"
+
+
+
+    response_llm = ChatOpenAI(
+        model="gpt-4",
+        max_tokens=4097,
+        temperature=0.7,
+        api_key=os.environ.get("OPENAI_API_KEY", openai_api_key)
+    )
+
+    response_sentence = response_llm(prompt_message)
+
+    return response_sentence

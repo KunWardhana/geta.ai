@@ -1,6 +1,9 @@
 import mysql.connector
+from flask import Flask, request, jsonify
 from langchain import PromptTemplate
-from lib.gen_chain import get_sql_chain
+from lib.gen_chain import get_sql_chain, transform_query_result_to_sentence
+
+app = Flask(__name__)
 
 MYSQL_HOST = "mysql"
 MYSQL_DATABASE = "mydatabase"
@@ -48,9 +51,9 @@ def test_mysql_connection(query):
             # print(f"{cursor.rowcount} records inserted successfully into employee table.")
 
             # Check and display the connected database
-            cursor.execute("SELECT DATABASE();")
-            record = cursor.fetchone()
-            print(f"Connected to MySQL database: {record[0]}")
+            # cursor.execute("SELECT DATABASE();")
+            # record = cursor.fetchone()
+            # print(f"Connected to MySQL database: {record[0]}")
 
             # Retrieve and display the data from the employee table
             # cursor.execute("SELECT * FROM employee;")
@@ -63,16 +66,28 @@ def test_mysql_connection(query):
 
             cursor.close()
         connection.close()
+        response = transform_query_result_to_sentence(OPENAI_API_KEY, rows, QUESTION_TEST)
+        return response
     except mysql.connector.Error as err:
         print(f"Error: {err}")
 
-def test_langchain():
-    prompt = PromptTemplate(input_variables=["name"], template="Hello, {name}!")
-    print(prompt.format(name="World"))
 
-if __name__ == "__main__":
-    test_mysql_connection(
+@app.route('/')
+def home():
+    return jsonify({"message": "Welcome to the Flask app!"})
+
+@app.route('/test_mysql', methods=['GET'])
+def api_test_mysql_connection():
+    output = test_mysql_connection(
         get_sql_chain(openai_api_key=OPENAI_API_KEY, question=QUESTION_TEST)
     )
-    test_langchain()
+    return jsonify(str(output.content)), 200
 
+@app.route('/test_langchain', methods=['GET'])
+def api_test_langchain():
+    prompt = PromptTemplate(input_variables=["name"], template="Hello, {name}!")
+    result = prompt.format(name="World")
+    return jsonify({"result": result}), 200
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000)
