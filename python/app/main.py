@@ -2,8 +2,12 @@ import mysql.connector
 from flask import Flask, request, jsonify
 from langchain import PromptTemplate
 from lib.gen_chain import get_sql_chain, transform_query_result_to_sentence
+from flask_cors import CORS
+import chromadb.api
+
 
 app = Flask(__name__)
+CORS(app)
 
 MYSQL_HOST = "mysql"
 MYSQL_DATABASE = "mydatabase"
@@ -12,7 +16,7 @@ MYSQL_PASSWORD = "password"
 OPENAI_API_KEY="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"
 QUESTION_TEST = "siapa orang dengan gaji tertinggi?"
 
-def test_mysql_connection(query):
+def test_mysql_connection(query, question):
     try:
         connection = mysql.connector.connect(
             host=MYSQL_HOST,
@@ -40,12 +44,12 @@ def test_mysql_connection(query):
             INSERT INTO employee (name, salary, address)
             VALUES (%s, %s, %s)
             """
-            # employees = [
-            #     ('Alice Johnson', 50000.00, '123 Main St'),
-            #     ('Bob Smith', 60000.00, '456 Oak St'),
-            #     ('Carol White', 55000.00, '789 Pine St')
-            # ]
-            # cursor.executemany(insert_query, employees)
+            employees = [
+                ('Alice Johnson', 50000.00, '123 Main St'),
+                ('Bob Smith', 60000.00, '456 Oak St'),
+                ('Carol White', 55000.00, '789 Pine St')
+            ]
+            cursor.executemany(insert_query, employees)
             # connection.commit()  # Commit the changes to the database
 
             # print(f"{cursor.rowcount} records inserted successfully into employee table.")
@@ -66,7 +70,7 @@ def test_mysql_connection(query):
 
             cursor.close()
         connection.close()
-        response = transform_query_result_to_sentence(OPENAI_API_KEY, rows, QUESTION_TEST)
+        response = transform_query_result_to_sentence(OPENAI_API_KEY, rows, question)
         return response
     except mysql.connector.Error as err:
         print(f"Error: {err}")
@@ -76,15 +80,23 @@ def test_mysql_connection(query):
 def home():
     return jsonify({"message": "Welcome to the Flask app!"})
 
-@app.route('/test_mysql', methods=['GET'])
+@app.route('/test_mysql', methods=['POST'])
 def api_test_mysql_connection():
-    output = test_mysql_connection(
-        get_sql_chain(openai_api_key=OPENAI_API_KEY, question=QUESTION_TEST)
-    )
-    return jsonify(str(output.content)), 200
+    chromadb.api.client.SharedSystemClient.clear_system_cache()
+    data = request.get_json()
+    question = data.get('question', QUESTION_TEST)
+    try:
+        output = test_mysql_connection(
+            get_sql_chain(openai_api_key=OPENAI_API_KEY, question=question), question
+        )
+        return jsonify(str(output.content)), 200
+    except Exception as e:
+        # Tangkap semua error dan tampilkan pesan error
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/test_langchain', methods=['GET'])
 def api_test_langchain():
+    chromadb.api.client.SharedSystemClient.clear_system_cache()
     prompt = PromptTemplate(input_variables=["name"], template="Hello, {name}!")
     result = prompt.format(name="World")
     return jsonify({"result": result}), 200
