@@ -4,6 +4,7 @@ from langchain import PromptTemplate
 from lib.gen_chain import get_sql_chain, transform_query_result_to_sentence, classify_question, general_question, analyze_from_excel
 from flask_cors import CORS
 import chromadb.api
+from langchain.memory import ConversationBufferMemory
 
 
 app = Flask(__name__)
@@ -15,6 +16,9 @@ MYSQL_USER = "user"
 MYSQL_PASSWORD = "password"
 OPENAI_API_KEY="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"
 QUESTION_TEST = "siapa orang dengan gaji tertinggi?"
+
+# Inisialisasi memori secara global untuk mempertahankan percakapan sebelumnya
+memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
 def test_mysql_connection(query, question):
     try:
@@ -61,8 +65,9 @@ def api_test_mysql_connection():
             # output = test_mysql_connection(
             #     get_sql_chain(openai_api_key=OPENAI_API_KEY, question=question), question
             # )
-            output = analyze_from_excel(openai_api_key=OPENAI_API_KEY, question=question)
-            return jsonify(str(output['result'])), 200
+            
+            output = analyze_from_excel(openai_api_key=OPENAI_API_KEY, question=question, memory=memory)
+            return jsonify(str(output)), 200
         except Exception as e:
             # Tangkap semua error dan tampilkan pesan error
             return jsonify({"error": str(e)}), 500

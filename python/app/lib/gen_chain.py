@@ -292,17 +292,22 @@ def general_question(openai_api_key,question):
 
     return response_sentence
 
-def analyze_from_excel(openai_api_key,question):
+def analyze_from_excel(openai_api_key,question,memory):
     from langchain_community.document_loaders import UnstructuredExcelLoader
     from langchain.document_loaders import CSVLoader
     from langchain.indexes import VectorstoreIndexCreator
     from langchain.chains import RetrievalQA
-    from langchain.llms import OpenAI
     import pandas as pd
     import os
     from langchain.embeddings import OpenAIEmbeddings
+    from langchain_community.chat_models import ChatOpenAI
+    from langchain.chains import ConversationalRetrievalChain
 
-    llm = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", openai_api_key))
+    llm = ChatOpenAI(api_key=os.environ.get("OPENAI_API_KEY", openai_api_key),
+                model = "gpt-4-turbo",  # Menggunakan chat model GPT-4 Turbo
+                temperature=0.1,  # Sesuaikan sesuai kebutuhan
+                max_tokens=4096  # Batasan token
+          )
     embeddings = OpenAIEmbeddings(api_key=os.environ.get("OPENAI_API_KEY", openai_api_key))
 
     loader = UnstructuredExcelLoader("faq.xlsx", mode="elements")
@@ -312,8 +317,12 @@ def analyze_from_excel(openai_api_key,question):
         embedding=embeddings,# vectorstore_cls=DocArrayInMemorySearch
         ).from_loaders([loader])
 
-    chain = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=index.vectorstore.as_retriever(), input_key="question")
-    query = question
-    response = chain({"question": query})
+    chain = ConversationalRetrievalChain.from_llm(
+        llm=llm, 
+        retriever=index.vectorstore.as_retriever(),
+        memory=memory  # Memori untuk menyimpan percakapan
+    )
     
-    return response
+    response = chain({"question": question})
+    
+    return response['answer']
