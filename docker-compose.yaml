@@ -37,5 +37,20 @@ services:
     ports:
       - "5001:5001"
 
+  nextjs:
+    build:
+      context: ./nodejs
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+
 volumes:
   mysql_data:
