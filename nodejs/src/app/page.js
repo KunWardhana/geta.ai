@@ -39,7 +39,7 @@ const HomePage = () => {
       justifyContent="center"
     >
       <Image src={Logo} width={200} height={200} alt='logo' />
-      <Heading as="h" size="lg" textAlign={{ base: "center", md: "start" }}>
+      <Heading size="lg" textAlign={{ base: "center", md: "start" }}>
         Apa yang bisa Bang Jasmar bantu?
       </Heading>
 
