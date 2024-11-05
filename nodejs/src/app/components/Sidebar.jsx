@@ -26,7 +26,7 @@ export default function Sidebar({ isOpen, onOpen, onClose }) {
     >
       <Flex
         align="center"
-        bg="blue.300"
+        bg="#002d5f"
         color="white"
         p={4}
         position="fixed"
@@ -47,9 +47,9 @@ export default function Sidebar({ isOpen, onOpen, onClose }) {
       </Flex>
       {isOpen && (
         <VStack spacing={4} align="start" mt="4rem" py={4}>
-          <Button onClick={() => alert('Profile clicked')}>Profile</Button>
-          <Button onClick={() => alert('Settings clicked')}>Settings</Button>
-          <Button onClick={() => alert('Help clicked')}>Help</Button>
+          <Button>Profile</Button>
+          <Button>Settings</Button>
+          <Button>Help</Button>
         </VStack>
       )}
     </Box>

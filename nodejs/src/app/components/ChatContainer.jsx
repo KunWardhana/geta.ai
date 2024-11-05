@@ -9,11 +9,11 @@ const ChatContainer = ({ children }) => {
       w="100%"
       h="100%"
       my={2}
-      p={2}
+      p={{ base: 0, md: 8 }}
       pb={28}
       borderRadius="md"
       overflowY="auto"
-      spacing={2}
+      spacing={4}
       css={{
         '&::-webkit-scrollbar': {
           width: '4px',

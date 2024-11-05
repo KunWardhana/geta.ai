@@ -39,11 +39,11 @@ const HomePage = () => {
       justifyContent="center"
     >
       <Image src={Logo} width={200} height={200} alt='logo' />
-      <Heading as="h" size="lg">
+      <Heading as="h" size="lg" textAlign={{ base: "center", md: "start" }}>
         Apa yang bisa Bang Jasmar bantu?
       </Heading>
 
-      <Box mt={8} width="50%" display="flex">
+      <Box mt={8} width={{ base: "100%", md: "50%" }} display="flex">
         <Input
           placeholder="Kirim pesan ke Bang Jasmar..."
           value={message}
@@ -60,7 +60,15 @@ const HomePage = () => {
 
       <Box display="flex" flexWrap="wrap" justifyContent="center" gap={4} mt={8}>
         {frequentlyAsked.map((item, idx) => (
-          <Button colorScheme="gray" variant="outline" rounded={"full"} key={idx} onClick={() => handleSubmit(item)}>
+          <Button
+            colorScheme="gray"
+            variant="outline"
+            rounded={"full"}
+            key={idx}
+            onClick={() => handleSubmit(item)}
+            width={{ base: '100%', sm: 'auto' }}
+            whiteSpace="normal"  
+          >
             {item}
           </Button>
         ))}

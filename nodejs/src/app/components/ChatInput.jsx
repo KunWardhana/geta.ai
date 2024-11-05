@@ -25,17 +25,17 @@ const ChatInput = ({ onSend, isSidebarOpen }) => {
 
   return (
     <HStack
-      w="800px"
+      w={{ base: '100%', md: '800px' }}
       py={4}
       px={6}
       spacing={2} 
       position="fixed"
-      bottom="12px"
-      left={`calc(50% - ${chatInputWidth / 2}px + ${leftPosition / 2}px - 12px)`}
+      bottom={{ base: '0', md: "12px" }}
+      left={{ base: '0', md: `calc(50% - ${chatInputWidth / 2}px + ${leftPosition / 2}px - 12px)` }}
       bg="gray.100"
       borderTopWidth="1px"
       borderColor="gray.200"
-      borderRadius={20}
+      borderRadius={{ base: 0, md: 20}}
       zIndex="sticky"
     >
       <Input

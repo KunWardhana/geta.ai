@@ -6,7 +6,7 @@ import ChatPage from './(routes)/chat/page';
 import { usePathname } from 'next/navigation';
 
 export default function RootLayout({ children }) {
-  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true });
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false });
   const pathname = usePathname(); 
 
   const isChatPage = pathname === '/chat'; 
@@ -15,10 +15,15 @@ export default function RootLayout({ children }) {
     <html>
       <body>
         <ChakraProvider>
-          <Sidebar isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+          <Sidebar
+            isOpen={isOpen}
+            onOpen={onOpen}
+            onClose={onClose}
+          />
           <Box
             ml={{ base: "0", md: isOpen ? "300px" : "0" }}
-            pl={4}
+            pl={{ base: 0, md: 4 }}
+            px={{ base: 4, md: 0 }}
             transition="margin-left 0.3s ease"
           >
             {isChatPage ? <ChatPage isSidebarOpen={isOpen} /> : children}

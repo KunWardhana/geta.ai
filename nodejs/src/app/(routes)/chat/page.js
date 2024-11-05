@@ -70,8 +70,8 @@ const ChatPage = ({ isSidebarOpen }) => {
       flexDirection: 'column',
       marginTop: '4rem',
     }}>
-      <Image src={Logo} width={180} height={180} alt='logo' />
       <ChatContainer>
+        <Image src={Logo} width={150} height={150} alt='logo' />
         {messages.map((msg, index) => (
           <MessageBubble
             key={index}
