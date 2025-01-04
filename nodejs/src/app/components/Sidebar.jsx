@@ -11,7 +11,7 @@ export default function Sidebar({ isOpen, onOpen, onClose }) {
   return (
     <Box
       as="aside"
-      w={isOpen ? "300px" : "0"}
+      w={isOpen ? "240px" : "0"}
       h="100vh"
       position="fixed"
       top="0"
@@ -47,9 +47,7 @@ export default function Sidebar({ isOpen, onOpen, onClose }) {
       </Flex>
       {isOpen && (
         <VStack spacing={4} align="start" mt="4rem" py={4}>
-          <Button>Profile</Button>
-          <Button>Settings</Button>
-          <Button>Help</Button>
+          <Button>About Me</Button>
         </VStack>
       )}
     </Box>

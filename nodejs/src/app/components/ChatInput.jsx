@@ -19,7 +19,7 @@ const ChatInput = ({ onSend, isSidebarOpen }) => {
     }
   };
 
-  const sidebarWidth = 300;
+  const sidebarWidth = 240;
   const chatInputWidth = 800;
   const leftPosition = isSidebarOpen ? sidebarWidth : 0;
 
