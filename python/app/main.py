@@ -1,24 +1,38 @@
 import mysql.connector
-from flask import Flask, request, jsonify
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from langchain import PromptTemplate
 from lib.gen_chain import get_sql_chain, transform_query_result_to_sentence, classify_question, general_question, analyze_from_excel
-from flask_cors import CORS
 import chromadb.api
 from langchain.memory import ConversationBufferMemory
 
+class QuestionRequest(BaseModel):
+    question: str
 
-app = Flask(__name__)
-CORS(app)
+# Initialize FastAPI app
+app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust for your allowed origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 MYSQL_HOST = "mysql"
 MYSQL_DATABASE = "mydatabase"
 MYSQL_USER = "user"
 MYSQL_PASSWORD = "password"
-OPENAI_API_KEY="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"
+OPENAI_API_KEY = "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"
 QUESTION_TEST = "siapa orang dengan gaji tertinggi?"
 
-# Inisialisasi memori secara global untuk mempertahankan percakapan sebelumnya
+# Initialize global memory for conversation history
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+
 
 def test_mysql_connection(query, question):
     try:
@@ -32,52 +46,59 @@ def test_mysql_connection(query, question):
             cursor = connection.cursor()
             cursor.execute(query)
             rows = cursor.fetchall()
-            print("Employee records:")
-            for row in rows:
-                print(row)
-
             cursor.close()
         connection.close()
+
         response = transform_query_result_to_sentence(OPENAI_API_KEY, rows, question)
         return response
     except mysql.connector.Error as err:
-        print(f"Error: {err}")
+        raise HTTPException(status_code=500, detail=f"Database error: {err}")
 
 
-@app.route('/')
-def home():
-    return jsonify({"message": "Welcome to the Flask app!"})
+@app.get("/")
+async def home():
+    return {"message": "Welcome to the FastAPI app!"}
 
-@app.route('/test_mysql', methods=['POST'])
-def api_test_mysql_connection():
-    chromadb.api.client.SharedSystemClient.clear_system_cache()
-    data = request.get_json()
-    question = data.get('question', QUESTION_TEST)
-    question_type = classify_question(openai_api_key=OPENAI_API_KEY, question=question)
-    print(question_type.content)
-    # toket = question_type.content.split(": ")[1]
-    toket = question_type.content
-    # print(question_type.content)
-    if toket  == 'general':
-        return jsonify(str(general_question(openai_api_key=OPENAI_API_KEY, question=question).content))
-    else:
-        try:
-            # output = test_mysql_connection(
-            #     get_sql_chain(openai_api_key=OPENAI_API_KEY, question=question), question
-            # )
-            
+
+@app.post("/prompt_llm")
+async def api_llm_prompt(data: QuestionRequest):
+    """
+    Endpoint to process a question and return results based on its type.
+    """
+    try:
+        question = data.question
+        print(f"Received question: {question}")
+
+        data = question
+        question_type = classify_question(openai_api_key=OPENAI_API_KEY, question=data)
+
+        if question_type.content == 'general':
+            return {"result": str(general_question(openai_api_key=OPENAI_API_KEY, question=question).content)}
+        else:
             output = analyze_from_excel(openai_api_key=OPENAI_API_KEY, question=question, memory=memory)
-            return jsonify(str(output)), 200
-        except Exception as e:
-            # Tangkap semua error dan tampilkan pesan error
-            return jsonify({"error": str(e)}), 500
+            return {"result": str(output)}
+        # if question.lower() == "general":
+        #     response = {"result": "This is a general question response"}
+        # else:
+        #     response = {"result": f"Response for question: {question}"}
 
-@app.route('/test_langchain', methods=['GET'])
-def api_test_langchain():
-    chromadb.api.client.SharedSystemClient.clear_system_cache()
-    prompt = PromptTemplate(input_variables=["name"], template="Hello, {name}!")
-    result = prompt.format(name="World")
-    return jsonify({"result": result}), 200
+        # return response
+
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.get("/test_langchain")
+async def api_test_langchain():
+    try:
+        chromadb.api.client.SharedSystemClient.clear_system_cache()
+        prompt = PromptTemplate(input_variables=["name"], template="Hello, {name}!")
+        result = prompt.format(name="World")
+        return {"result": result}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=5001)

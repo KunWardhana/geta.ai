@@ -3,10 +3,10 @@ mysql-connector-python
 langchain_community
 langchain_chroma
 langchain_openai
-Flask
+fastapi 
 flask-cors
 pandas
-unstructured 
+unstructured
 openpyxl
 networkx
 langchain-community
