@@ -22,8 +22,7 @@ export default function RootLayout({ children }) {
           />
           <Box
             ml={{ base: "0", md: isOpen ? "240px" : "0" }}
-            pl={{ base: 0, md: 4 }}
-            px={{ base: 4, md: 0 }}
+            px={{ base: 4, md: 4 }}
             transition="margin-left 0.3s ease"
           >
             {isChatPage ? <ChatPage isSidebarOpen={isOpen} /> : children}

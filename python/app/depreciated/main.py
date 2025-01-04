@@ -3,13 +3,13 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from lib.retriever import llamaindex
-from dotenv import load_dotenv
-import os
+from langchain import PromptTemplate
+from lib.gen_chain import get_sql_chain, transform_query_result_to_sentence, classify_question, general_question, analyze_from_excel
+import chromadb.api
+from langchain.memory import ConversationBufferMemory
+
 import requests
 import pandas as pd
-
-load_dotenv()
 
 class QuestionRequest(BaseModel):
     question: str
@@ -26,12 +26,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MYSQL_HOST = os.environ.get("MYSQL_HOST")
-MYSQL_DATABASE = os.environ.get("MYSQL_DATABASE")
-MYSQL_USER = os.environ.get("MYSQL_USER")
-MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD")
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-X_API_KEY = os.environ.get("X_API_KEY")
+MYSQL_HOST = "mysql"
+MYSQL_DATABASE = "mydatabase"
+MYSQL_USER = "user"
+MYSQL_PASSWORD = "password"
+OPENAI_API_KEY = "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"
+QUESTION_TEST = "siapa orang dengan gaji tertinggi?"
+X_API_KEY = "a186751c-791c-4bf3-8fd5-5bd27e220f59"
+
+# Initialize global memory for conversation history
+memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+
 
 def test_mysql_connection(query, question):
     try:
@@ -48,8 +53,7 @@ def test_mysql_connection(query, question):
             cursor.close()
         connection.close()
 
-        # response = transform_query_result_to_sentence(OPENAI_API_KEY, rows, question)
-        response = 'INI BELUM DI BUTUHIN'
+        response = transform_query_result_to_sentence(OPENAI_API_KEY, rows, question)
         return response
     except mysql.connector.Error as err:
         raise HTTPException(status_code=500, detail=f"Database error: {err}")
@@ -69,9 +73,20 @@ async def api_llm_prompt(data: QuestionRequest):
         question = data.question
         print(f"Received question: {question}")
 
-        response = llamaindex(question=question)
+        data = question
+        question_type = classify_question(openai_api_key=OPENAI_API_KEY, question=data)
 
-        return {"result": str(response)}
+        if question_type.content == 'general':
+            return {"result": str(general_question(openai_api_key=OPENAI_API_KEY, question=question).content)}
+        else:
+            output = analyze_from_excel(openai_api_key=OPENAI_API_KEY, question=question, memory=memory)
+            return {"result": str(output)}
+        # if question.lower() == "general":
+        #     response = {"result": "This is a general question response"}
+        # else:
+        #     response = {"result": f"Response for question: {question}"}
+
+        # return response
 
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
