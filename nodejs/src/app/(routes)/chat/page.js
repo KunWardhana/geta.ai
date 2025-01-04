@@ -33,7 +33,7 @@ const ChatPage = ({ isSidebarOpen }) => {
       const { data } = response;
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: data, isUser: false },
+        { text: data?.result, isUser: false },
       ]);
     } catch (error) {
       console.error('Error fetching data:', error);
