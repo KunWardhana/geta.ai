@@ -12,21 +12,21 @@ const ChatContainer = ({ children }) => {
       paddingTop={{ base: 0, md: 8 }}
       paddingRight={{ base: 0, md: 8 }}
       paddingLeft={{ base: 0, md: 8 }}
-      paddingBottom={{ base: 0, md: 20 }}
+      paddingBottom={{ base: 16, md: 20 }}
       borderRadius="md"
       overflowY="auto"
       spacing={4}
       css={{
         '&::-webkit-scrollbar': {
-          width: '4px',
+          width: '2px',
         },
         '&::-webkit-scrollbar-track': {
-          width: '6px',
+          width: '4px',
         },
         '&::-webkit-scrollbar-thumb': {
-          borderRadius: '24px',
+          borderRadius: '16px',
         },
-        scrollbarWidth: 'thin'
+        scrollbarWidth: 'none'
       }}
     >
       {children}
