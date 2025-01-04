@@ -26,7 +26,7 @@ const ChatPage = ({ isSidebarOpen }) => {
   const getResponseMessage = async (message) => {
     setLoading(true);
     try {
-      const response = await axios.post('http://127.0.0.1:5001/test_mysql', {
+      const response = await axios.post('http://127.0.0.1:5001/prompt_llm', {
         question: message
       });
       const { data } = response;

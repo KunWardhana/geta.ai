@@ -1,7 +1,7 @@
 "use client"
 
-import { Box, Text, keyframes } from '@chakra-ui/react';
-// import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Box, Text } from '@chakra-ui/react';
+import { keyframes } from "@emotion/react";
 
 const dotAnimation = keyframes`
   0% { transform: scale(1); opacity: 1; }
