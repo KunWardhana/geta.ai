@@ -9,6 +9,7 @@ import ChatInput from '../../components/ChatInput';
 import Logo from '../../../../public/jmclicklogo.png';
 
 const ChatPage = ({ isSidebarOpen }) => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([
     { text: "Halo, selamat datang di Bang Jasmar. Ada yang bisa saya bantu?", isUser: false },
@@ -26,13 +27,13 @@ const ChatPage = ({ isSidebarOpen }) => {
   const getResponseMessage = async (message) => {
     setLoading(true);
     try {
-      const response = await axios.post('http://127.0.0.1:5001/test_mysql', {
+      const response = await axios.post(`${apiUrl}/prompt_llm`, {
         question: message
       });
       const { data } = response;
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: data, isUser: false },
+        { text: data?.result, isUser: false },
       ]);
     } catch (error) {
       console.error('Error fetching data:', error);

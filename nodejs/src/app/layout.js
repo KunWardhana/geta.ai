@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
             onClose={onClose}
           />
           <Box
-            ml={{ base: "0", md: isOpen ? "300px" : "0" }}
+            ml={{ base: "0", md: isOpen ? "240px" : "0" }}
             pl={{ base: 0, md: 4 }}
             px={{ base: 4, md: 0 }}
             transition="margin-left 0.3s ease"
