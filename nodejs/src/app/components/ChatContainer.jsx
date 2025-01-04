@@ -9,8 +9,10 @@ const ChatContainer = ({ children }) => {
       w="100%"
       h="100%"
       my={2}
-      p={{ base: 0, md: 8 }}
-      pb={28}
+      paddingTop={{ base: 0, md: 8 }}
+      paddingRight={{ base: 0, md: 8 }}
+      paddingLeft={{ base: 0, md: 8 }}
+      paddingBottom={{ base: 0, md: 20 }}
       borderRadius="md"
       overflowY="auto"
       spacing={4}
