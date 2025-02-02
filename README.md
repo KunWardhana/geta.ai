@@ -1,4 +1,4 @@
-# Running Andrea.ai
+# Running geta.ai
 
 This guide will walk you through running the Andrea.ai application using Docker. Follow the steps below to set up and run the application.
 
