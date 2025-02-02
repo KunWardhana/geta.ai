@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Box, Button, Heading, Input } from '@chakra-ui/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Logo from '../../public/jmclicklogo.png';
+import Logo from '../../public/travoylogo.png';
 import Send from '../../public/send.png';
 
 const HomePage = () => {
@@ -40,12 +40,12 @@ const HomePage = () => {
     >
       <Image src={Logo} width={200} height={200} alt='logo' />
       <Heading size="lg" textAlign={{ base: "center", md: "start" }}>
-        Apa yang bisa Bang Jasmar bantu?
+        Apa yang bisa Geta bantu?
       </Heading>
 
       <Box mt={8} width={{ base: "100%", md: "50%" }} display="flex">
         <Input
-          placeholder="Kirim pesan ke Bang Jasmar..."
+          placeholder="Kirim pesan ke Geta..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           bg="white"

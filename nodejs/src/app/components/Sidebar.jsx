@@ -2,6 +2,8 @@
 
 import { Box, VStack, Button, Flex, Heading, IconButton } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
+import Image from 'next/image';
+import Geta from '../../../public/geta_orange.png';
 
 export default function Sidebar({ isOpen, onOpen, onClose }) {
   const onHomePage = () => {
@@ -26,7 +28,7 @@ export default function Sidebar({ isOpen, onOpen, onClose }) {
     >
       <Flex
         align="center"
-        bg="#002d5f"
+        bg="#E2E8F0"
         color="white"
         p={4}
         position="fixed"
@@ -36,20 +38,21 @@ export default function Sidebar({ isOpen, onOpen, onClose }) {
         h="64px"
         zIndex="sticky"
       >
-        <IconButton
+        {/* <IconButton
           aria-label="Open/Close Sidebar"
           variant={"outline"}
-          colorScheme="whiteAlpha"
+          backgroundColor="#344879"
+          color="#ffffff"
           onClick={isOpen ? onClose : onOpen}
           icon={<HamburgerIcon />}
-        />
-        <Heading ml={4} size="md" onClick={onHomePage}>Bang Jasmar</Heading>
+        /> */}
+        <Image src={Geta} width={120} height={52} alt='logo' onClick={onHomePage} />
       </Flex>
-      {isOpen && (
+      {/* {isOpen && (
         <VStack spacing={4} align="start" mt="4rem" py={4}>
           <Button>About Me</Button>
         </VStack>
-      )}
+      )} */}
     </Box>
   );
 }

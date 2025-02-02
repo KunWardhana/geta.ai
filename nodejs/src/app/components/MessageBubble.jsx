@@ -42,7 +42,7 @@ const MessageBubble = ({ message, isUser, isLoading }) => {
       maxWidth="75%"
     >
       <Box
-        bg={isUser ? 'blue.500' : 'gray.200'}
+        bg={isUser ? '#344879' : 'gray.200'}
         color={isUser ? 'white' : 'black'}
         borderRadius="lg"
         px={4}

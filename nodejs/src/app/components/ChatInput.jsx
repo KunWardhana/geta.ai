@@ -27,7 +27,7 @@ const ChatInput = ({ onSend, isSidebarOpen }) => {
     <HStack
       w={{ base: '100%', md: '800px' }}
       py={4}
-      px={6}
+      px={4}
       spacing={2} 
       position="fixed"
       bottom={{ base: '0', md: "12px" }}
@@ -47,7 +47,7 @@ const ChatInput = ({ onSend, isSidebarOpen }) => {
         borderRadius="md"
         onKeyDown={handleKeyDown}
       />
-      <Button colorScheme="blue" onClick={handleSend}>
+      <Button backgroundColor="#344879" color="#ffffff" onClick={handleSend}>
         Send
       </Button>
     </HStack>

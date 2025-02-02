@@ -6,13 +6,13 @@ import Image from 'next/image';
 import ChatContainer from '../../components/ChatContainer';
 import MessageBubble from '../../components/MessageBubble';
 import ChatInput from '../../components/ChatInput';
-import Logo from '../../../../public/jmclicklogo.png';
+import Logo from '../../../../public/travoylogo.png';
 
 const ChatPage = ({ isSidebarOpen }) => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([
-    { text: "Halo, selamat datang di Bang Jasmar. Ada yang bisa saya bantu?", isUser: false },
+    { text: "Halo, selamat datang di Geta. Ada yang bisa saya bantu?", isUser: false },
   ]);
   const chatEndRef = useRef(null);
 
