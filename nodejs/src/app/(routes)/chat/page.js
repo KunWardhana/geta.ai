@@ -6,7 +6,7 @@ import Image from 'next/image';
 import ChatContainer from '../../components/ChatContainer';
 import MessageBubble from '../../components/MessageBubble';
 import ChatInput from '../../components/ChatInput';
-import Logo from '../../../../public/travoylogo.png';
+import Logo from '../../../../public/geta_logo.png';
 
 const ChatPage = ({ isSidebarOpen }) => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -26,26 +26,71 @@ const ChatPage = ({ isSidebarOpen }) => {
 
   const getResponseMessage = async (message) => {
     setLoading(true);
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { text: "", isUser: false, isStreaming: true },
+    ]);
+  
     try {
-      const response = await axios.post(`${apiUrl}/prompt_llm`, {
-        question: message
+      const response = await fetch(`${apiUrl}/stream_llm`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ question: message }),
       });
-      const { data } = response;
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: data?.result, isUser: false },
-      ]);
+  
+      if (!response.ok || !response.body) {
+        throw new Error("Response stream error");
+      }
+  
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let accumulatedText = "";
+  
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {        
+          console.log("Streaming complete.");
+          break;
+        }
+  
+        const chunk = decoder.decode(value, { stream: true });
+        accumulatedText += chunk;
+  
+        setMessages((prevMessages) => {
+          const newMessages = [...prevMessages];
+          newMessages[newMessages.length - 1] = {
+            ...newMessages[newMessages.length - 1],
+            text: accumulatedText,
+            isStreaming: true,
+            isUser: false
+          };
+          return newMessages;
+        });
+      }
+  
+      setMessages((prevMessages) => {
+        const newMessages = [...prevMessages];
+        newMessages[newMessages.length - 1] = {
+          ...newMessages[newMessages.length - 1],
+          isStreaming: false,
+          isUser: false
+        };
+        return newMessages;
+      });
+  
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: 'Maaf kami belum bisa menjawabnya :(', isUser: false },
+        { text: "Maaf kami belum bisa menjawabnya :(", isUser: false },
       ]);
     } finally {
       setLoading(false);
     }
-  }
-
+  };
+  
   useEffect(() => {
     const storedMessage = localStorage.getItem('chatMessage');
     if (storedMessage) {
@@ -72,21 +117,16 @@ const ChatPage = ({ isSidebarOpen }) => {
       marginTop: '4rem',
     }}>
       <ChatContainer>
-        <Image src={Logo} width={150} height={150} alt='logo' />
+        <Image src={Logo} width={200} height={80} alt='logo' />
         {messages.map((msg, index) => (
           <MessageBubble
             key={index}
-            message={msg.text} 
+            message={msg.text}
             isUser={msg.isUser}
+            isStreaming={index === messages.length - 1 && msg.isStreaming}
           />
         ))}
-        {loading && (
-          <MessageBubble 
-            message="" 
-            isLoading={loading}
-            isUser={false}
-          />
-        )}
+
         <div ref={chatEndRef} />
       </ChatContainer>
       <ChatInput

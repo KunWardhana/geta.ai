@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Box, Button, Heading, Input } from '@chakra-ui/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Logo from '../../public/travoylogo.png';
+import Logo from '../../public/geta_logo.png';
 import Send from '../../public/send.png';
 
 const HomePage = () => {
@@ -38,7 +38,7 @@ const HomePage = () => {
       alignItems="center"
       justifyContent="center"
     >
-      <Image src={Logo} width={200} height={200} alt='logo' />
+      <Image src={Logo} width={260} height={106} alt="logo" />
       <Heading size="lg" textAlign={{ base: "center", md: "start" }}>
         Apa yang bisa Geta bantu?
       </Heading>

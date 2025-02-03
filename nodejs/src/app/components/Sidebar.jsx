@@ -3,7 +3,7 @@
 import { Box, VStack, Button, Flex, Heading, IconButton } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import Image from 'next/image';
-import Geta from '../../../public/geta_orange.png';
+import Travoy from '../../../public/travoylogo.png';
 
 export default function Sidebar({ isOpen, onOpen, onClose }) {
   const onHomePage = () => {
@@ -46,7 +46,7 @@ export default function Sidebar({ isOpen, onOpen, onClose }) {
           onClick={isOpen ? onClose : onOpen}
           icon={<HamburgerIcon />}
         /> */}
-        <Image src={Geta} width={120} height={52} alt='logo' onClick={onHomePage} />
+        {/* <Image src={Travoy} width={48} height={48} alt="logo" onClick={onHomePage} /> */}
       </Flex>
       {/* {isOpen && (
         <VStack spacing={4} align="start" mt="4rem" py={4}>
