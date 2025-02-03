@@ -9,3 +9,5 @@ llama-index
 llama-parse 
 python-dotenv
 uvicorn
+sqlalchemy[asyncio]
+pymysql

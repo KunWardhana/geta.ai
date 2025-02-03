@@ -3,20 +3,22 @@ version: '3.8'
 services:
   mysql:
     image: mysql:8.0
+    command: --init-file=/docker-entrypoint-initdb.d/travoy.sql
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: mydatabase
       MYSQL_USER: user
       MYSQL_PASSWORD: password
-    ports:
-      - "3307:3307"
+    ports: 
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql/my.cnf:/etc/mysql/my.cnf
+      - ./mysql/travoy.sql:/docker-entrypoint-initdb.d/travoy.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
+      interval: 30s
+      timeout: 20s
       retries: 5
 
   python:
