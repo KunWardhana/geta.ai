@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from lib.retriever import llamaindex
+from lib.core.retriever import llamaindex
 from dotenv import load_dotenv
 import os
 import requests
@@ -69,7 +69,13 @@ async def api_llm_prompt(data: QuestionRequest):
         question = data.question
         print(f"Received question: {question}")
 
-        response = llamaindex(question=question)
+        response = llamaindex(
+            question,
+            MYSQL_HOST,
+            MYSQL_DATABASE,
+            MYSQL_USER,
+            MYSQL_PASSWORD
+        )
 
         return {"result": str(response)}
 
