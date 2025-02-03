@@ -63,7 +63,7 @@ const MessageBubble = ({ message, isUser, isStreaming }) => {
         py={2}
         width="fit-content"
       >
-        {isStreaming && !displayMessage ? <DotLoader /> : <Text style={{ whiteSpace: "pre-line" }}>{displayMessage}</Text>}
+        {isStreaming && !displayMessage ? <DotLoader /> : <Text style={{ whiteSpace: "pre-line", wordBreak: "break-word" }}>{displayMessage}</Text>}
       </Box>
     </Box>
   );
