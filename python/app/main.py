@@ -1,10 +1,12 @@
 import mysql.connector
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from lib.retriever import llamaindex
 from dotenv import load_dotenv
+from typing import AsyncGenerator
+import asyncio
 import os
 import requests
 import pandas as pd
@@ -54,6 +56,16 @@ def test_mysql_connection(query, question):
     except mysql.connector.Error as err:
         raise HTTPException(status_code=500, detail=f"Database error: {err}")
 
+async def llamaindex_stream(question: str) -> AsyncGenerator[str, None]:
+    try:
+        response = llamaindex(question)
+
+        for chunk in response.response.split(): 
+            yield chunk + " "
+            await asyncio.sleep(0.05) 
+
+    except Exception as e:
+        yield f"Error: {str(e)}"
 
 @app.get("/")
 async def home():
@@ -122,7 +134,13 @@ async def fetch_data():
         raise HTTPException(status_code=500, detail=f"Error fetching data from API: {e}")
     except ValueError as e:
         raise HTTPException(status_code=500, detail=f"Error processing JSON data: {e}")
-
+        
+@app.post("/stream_llm")
+async def api_llm_stream(data: QuestionRequest):
+    """
+    FastAPI endpoint to process questions and stream responses.
+    """
+    return StreamingResponse(llamaindex_stream(data.question), media_type="text/plain")
 
 if __name__ == "__main__":
     import uvicorn
