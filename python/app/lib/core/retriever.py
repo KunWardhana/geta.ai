@@ -50,11 +50,7 @@ def tool_colonizing(
         raise
 
 def llamaindex(
-        question,
-        MYSQL_HOST,
-        MYSQL_DATABASE,
-        MYSQL_USER,
-        MYSQL_PASSWORD
+        question
     ):
     LIST_TABLES = ["rest_area_place_facilities","rest_area_place_types"]
     db_engine = create_engine(f"mysql+pymysql://user:password@mysql:3306/mydatabase")

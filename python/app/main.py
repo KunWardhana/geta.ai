@@ -82,11 +82,7 @@ async def api_llm_prompt(data: QuestionRequest):
         print(f"Received question: {question}")
 
         response = llamaindex(
-            question,
-            MYSQL_HOST,
-            MYSQL_DATABASE,
-            MYSQL_USER,
-            MYSQL_PASSWORD
+            question
         )
 
         return {"result": str(response)}
