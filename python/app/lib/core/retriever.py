@@ -13,7 +13,7 @@ from lib.metadata.prompt import REFINE_REACT_AGENT_PROMPT
 
 from sqlalchemy import create_engine
 
-def tool_colonizing(
+async def tool_colonizing(
     llm: OpenAI,
     sql_database: SQLDatabase,
     list_table: List[str],
@@ -35,7 +35,7 @@ def tool_colonizing(
         
         ## Setup NL SQL Table Retriever Tool ##
         query_sql_tool = tool.query_engine_tool(
-            engine = NLSQLQueryEngine(llm).create_engine(sql_database, tuple(list_table)),
+            engine = await NLSQLQueryEngine(llm).create_engine(sql_database, tuple(list_table)),
             name = "sql_query_engine",
             description = (
                 "Useful for translating a natural language query into a SQL query to retrieve informations from database"
@@ -49,10 +49,10 @@ def tool_colonizing(
         print(f"Error in call_agent: {e}")
         raise
 
-def llamaindex(
+async def llamaindex(
         question
     ):
-    LIST_TABLES = ["rest_area_place_facilities","rest_area_place_types"]
+    LIST_TABLES = ["rest_area_place_facilities","rest_area_place_types","rest_area_places","tbl_master_tarif"]
     db_engine = create_engine(f"mysql+pymysql://user:password@mysql:3306/mydatabase")
     SQLDATABASE = SQLDatabase(db_engine, include_tables=LIST_TABLES)
     
@@ -63,7 +63,7 @@ def llamaindex(
         context_window=15000
     )
 
-    agent_tools = tool_colonizing(
+    agent_tools = await tool_colonizing(
         llm=llm,
         sql_database=SQLDATABASE,
         list_table=LIST_TABLES
@@ -75,7 +75,7 @@ def llamaindex(
         context=REFINE_REACT_AGENT_PROMPT,
         max_iterations=10,
         timeout=180,
-        verbose=False,
+        verbose=True,
     )
 
     response = query_engine.query(question)

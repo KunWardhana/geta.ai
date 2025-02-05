@@ -73,7 +73,7 @@ class NLSQLQueryEngine(BaseEngine):
         query_engine = NLSQLTableQueryEngine(
             sql_database=database, 
             tables=list_table,
-            verbose=False,
+            verbose=True,
             markdown_respons=True,
             synthesize_response=True,
             refresh_schema=False,

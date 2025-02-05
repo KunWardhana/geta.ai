@@ -58,7 +58,9 @@ def test_mysql_connection(query, question):
 
 async def llamaindex_stream(question: str) -> AsyncGenerator[str, None]:
     try:
-        response = llamaindex(question)
+        response = await llamaindex(question)
+        
+        print(response)
 
         for chunk in response.response.split(): 
             yield chunk + " "
@@ -84,6 +86,8 @@ async def api_llm_prompt(data: QuestionRequest):
         response = llamaindex(
             question
         )
+
+        print(response)
 
         return {"result": str(response)}
 
