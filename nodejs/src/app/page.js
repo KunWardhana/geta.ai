@@ -25,10 +25,11 @@ const HomePage = () => {
   };
 
   const frequentlyAsked = [
-    "Bagaimana kalau saya tidak bisa log in JMClick?",
-    "Bagaimana jika saya tidak bisa melakukan absensi?",
-    "Bagaimana cara update data E-CV?"
-  ]
+    "Bagaimana kondisi lalu lintas Jakarta Cikampek?",
+    "Daftar rest area di Jakarta Cikampek?",
+    "Berapa biaya yang diperlukan saat lewat Jakarta Cikampek?",
+    "Tanya situasi di lokasi saat ini"
+  ];
 
   return (
     <Box
