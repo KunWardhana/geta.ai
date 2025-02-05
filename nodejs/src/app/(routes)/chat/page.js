@@ -24,6 +24,39 @@ const ChatPage = ({ isSidebarOpen }) => {
     getResponseMessage(message);
   };
 
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+            .then(response => response.json())
+            .then(data => {
+              const locData = `Tolong carikan rest area terdekat berdasarkan lokasi saya saat ini: ${data.display_name}`;
+              setMessages((prevMessages) => [
+                ...prevMessages,
+                { text: locData, isUser: true },
+              ]);
+              getResponseMessage(locData)
+            })
+            .catch(error => console.error("Error:", error));
+        },
+        (err) => {
+          const errorMessage = "⚠️ Gagal mendapatkan lokasi. Periksa izin lokasi di browser Anda.";
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: errorMessage, isUser: false },
+          ]);
+        }
+      );
+    } else {
+      const unsupportedMessage = "⚠️ Geolocation tidak didukung di browser ini.";
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: unsupportedMessage, isUser: false },
+      ]);
+    }
+  };
+
   const getResponseMessage = async (message) => {
     setLoading(true);
     setMessages((prevMessages) => [
@@ -92,13 +125,19 @@ const ChatPage = ({ isSidebarOpen }) => {
   };
   
   useEffect(() => {
-    const storedMessage = localStorage.getItem('chatMessage');
+    let storedMessage = localStorage.getItem('chatMessage');
     if (storedMessage) {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: storedMessage, isUser: true },
-      ]);
-      getResponseMessage(storedMessage);
+
+      if (storedMessage.includes("lokasi saat ini")) {
+        getLocation();
+      } else {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text: storedMessage, isUser: true },
+        ]);
+        getResponseMessage(storedMessage);
+      }
+
       localStorage.removeItem('chatMessage');
     }
   }, []);
