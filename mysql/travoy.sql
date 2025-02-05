@@ -58,6 +58,53 @@ INSERT INTO `rest_area_place_types` VALUES (6, 'Market', 'Market', NULL, NULL, 1
 INSERT INTO `rest_area_place_types` VALUES (7, 'Top-up', 'Top-up', NULL, NULL, 1, NULL, NULL);
 INSERT INTO `rest_area_place_types` VALUES (8, 'Stand', 'Stand', NULL, NULL, 1, NULL, NULL);
 
+-- -- ----------------------------
+-- -- Table structure for highways
+-- -- ----------------------------
+DROP TABLE IF EXISTS `highways`;
+CREATE TABLE `highways`  (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `start_latitude` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `start_longitude` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `end_latitude` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `end_longitude` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `created_at` timestamp(0) NULL DEFAULT current_timestamp,
+  `updated_at` timestamp(0) NULL DEFAULT current_timestamp ON UPDATE CURRENT_TIMESTAMP,
+  `is_active` int(11) NULL DEFAULT 1,
+  `created_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `updated_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `a` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `b` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of highways
+-- ----------------------------
+INSERT INTO `highways` VALUES (1, 'Jakarta - Cikampek', '0', '0', '0', '0', '2022-04-14 13:33:53', '2024-01-17 11:11:37', 1, NULL, NULL, 'Cikampek', 'Jakarta');
+INSERT INTO `highways` VALUES (2, 'Purbaleunyi', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:38:06', 1, NULL, NULL, 'Bandung/Ciawi', 'Jakarta');
+INSERT INTO `highways` VALUES (3, 'Jagorawi', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:37:27', 1, NULL, NULL, 'Bogor/Ciawi', 'Jakarta');
+INSERT INTO `highways` VALUES (4, 'Cikampek - Palimanan', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:38:36', 1, NULL, NULL, 'Palimanan', 'Cikampek');
+INSERT INTO `highways` VALUES (5, 'Palimanan - Kanci', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:38:37', 1, NULL, NULL, 'Cirebon', 'Palimanan');
+INSERT INTO `highways` VALUES (6, 'Kanci - Pejagan', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:38:56', 1, NULL, NULL, 'Pejagan', 'Cirebon');
+INSERT INTO `highways` VALUES (7, 'Pejagan - Pemalang', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:39:38', 1, NULL, NULL, 'Pemalang', 'Pejagan');
+INSERT INTO `highways` VALUES (8, 'Pemalang - Batang', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:39:38', 1, NULL, NULL, 'Batang', 'Pemalang');
+INSERT INTO `highways` VALUES (9, 'Batang - Semarang', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:39:38', 1, NULL, NULL, 'Semarang', 'Batang');
+INSERT INTO `highways` VALUES (10, 'Semarang ABC', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:41:39', 1, NULL, NULL, 'Ungaran', 'Semarang');
+INSERT INTO `highways` VALUES (11, 'Semarang Solo', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:40:24', 1, NULL, NULL, 'Solo', 'Semarang');
+INSERT INTO `highways` VALUES (12, 'Solo - Ngawi', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:43:09', 1, NULL, NULL, 'Ngawi', 'Solo');
+INSERT INTO `highways` VALUES (13, 'Ngawi - Kertosono', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:43:09', 1, NULL, NULL, 'Kertosono', 'Ngawi');
+INSERT INTO `highways` VALUES (14, 'Kertosono - Mojokerto', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:43:09', 1, NULL, NULL, 'Mojokerto', 'Kertosono');
+INSERT INTO `highways` VALUES (15, 'Mojokerto - Surabaya', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:43:09', 1, NULL, NULL, 'Surabaya', 'Mojokerto');
+INSERT INTO `highways` VALUES (16, 'Surabaya - Gempol', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:43:09', 1, NULL, NULL, 'Gempol', 'Surabaya');
+INSERT INTO `highways` VALUES (17, 'Gempol - Pasuruan', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:46:07', 1, NULL, NULL, 'Pasuruan', 'Gempol');
+INSERT INTO `highways` VALUES (19, 'Pandaan - Malang', '0', '0', '0', '0', '2022-04-14 13:11:55', '2023-04-15 21:46:07', 1, NULL, NULL, 'Malang', 'Pandaan');
+INSERT INTO `highways` VALUES (20, 'Medan - Kualanamu - Tebing Tinggi', '0', '0', '0', '0', '2022-04-14 13:21:14', '2023-04-15 21:46:54', 1, NULL, NULL, 'Tebing Tinggi', 'Medan');
+INSERT INTO `highways` VALUES (21, 'Balikpapan - Samarinda', '0', '0', '0', '0', '2022-04-14 13:21:42', '2023-04-15 21:46:54', 1, NULL, NULL, 'Samarinda', 'Balikpapan');
+INSERT INTO `highways` VALUES (22, 'Jakarta - Tangerang', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:46:07', 1, NULL, NULL, 'Tangerang', 'Jakarta');
+
+
 -- ----------------------------
 -- Table structure for rest_area_places
 -- ----------------------------
@@ -6912,51 +6959,5 @@ INSERT INTO `tbl_tarif_tol` VALUES (4611, 'Sayung', NULL, NULL, 'Demak', NULL, N
 INSERT INTO `tbl_tarif_tol` VALUES (4612, 'Demak', NULL, NULL, 'Sayung', NULL, NULL, 19000, 28500, 28500, 38500, 38500, NULL, NULL, 0, '2024-11-28 13:46:43', NULL, NULL, NULL, NULL);
 INSERT INTO `tbl_tarif_tol` VALUES (4613, 'KAUDITAN', '1404177', '125055089', 'BITUNG', NULL, NULL, 24000, 36000, 36000, 47500, 47500, NULL, NULL, 0, '2021-03-12 06:20:23', '2021-03-12 09:22:12', NULL, NULL, NULL);
 INSERT INTO `tbl_tarif_tol` VALUES (4614, 'DANOWUDU', '14331687', '125102102', 'BITUNG', NULL, NULL, 16000, 25000, 25000, 33000, 33000, NULL, NULL, 0, '2021-03-12 06:20:23', '2021-03-12 09:22:12', NULL, NULL, NULL);
-
--- -- ----------------------------
--- -- Table structure for highways
--- -- ----------------------------
--- DROP TABLE IF EXISTS `highways`;
--- CREATE TABLE `highways`  (
---   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
---   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
---   `start_latitude` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
---   `start_longitude` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
---   `end_latitude` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
---   `end_longitude` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
---   `created_at` timestamp(0) NULL DEFAULT current_timestamp,
---   `updated_at` timestamp(0) NULL DEFAULT current_timestamp ON UPDATE CURRENT_TIMESTAMP,
---   `is_active` int(11) NULL DEFAULT 1,
---   `created_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
---   `updated_by` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
---   `a` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
---   `b` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
---   PRIMARY KEY (`id`) USING BTREE
--- ) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
-
--- -- ----------------------------
--- -- Records of highways
--- -- ----------------------------
--- INSERT INTO `highways` VALUES (1, 'Jakarta - Cikampek', '0', '0', '0', '0', '0000-00-00 00:00:00', '2024-01-17 11:11:37', 1, NULL, NULL, 'Cikampek', 'Jakarta');
--- INSERT INTO `highways` VALUES (2, 'Purbaleunyi', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:38:06', 1, NULL, NULL, 'Bandung/Ciawi', 'Jakarta');
--- INSERT INTO `highways` VALUES (3, 'Jagorawi', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:37:27', 1, NULL, NULL, 'Bogor/Ciawi', 'Jakarta');
--- INSERT INTO `highways` VALUES (4, 'Cikampek - Palimanan', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:38:36', 1, NULL, NULL, 'Palimanan', 'Cikampek');
--- INSERT INTO `highways` VALUES (5, 'Palimanan - Kanci', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:38:37', 1, NULL, NULL, 'Cirebon', 'Palimanan');
--- INSERT INTO `highways` VALUES (6, 'Kanci - Pejagan', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:38:56', 1, NULL, NULL, 'Pejagan', 'Cirebon');
--- INSERT INTO `highways` VALUES (7, 'Pejagan - Pemalang', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:39:38', 1, NULL, NULL, 'Pemalang', 'Pejagan');
--- INSERT INTO `highways` VALUES (8, 'Pemalang - Batang', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:39:38', 1, NULL, NULL, 'Batang', 'Pemalang');
--- INSERT INTO `highways` VALUES (9, 'Batang - Semarang', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:39:38', 1, NULL, NULL, 'Semarang', 'Batang');
--- INSERT INTO `highways` VALUES (10, 'Semarang ABC', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:41:39', 1, NULL, NULL, 'Ungaran', 'Semarang');
--- INSERT INTO `highways` VALUES (11, 'Semarang Solo', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:40:24', 1, NULL, NULL, 'Solo', 'Semarang');
--- INSERT INTO `highways` VALUES (12, 'Solo - Ngawi', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:43:09', 1, NULL, NULL, 'Ngawi', 'Solo');
--- INSERT INTO `highways` VALUES (13, 'Ngawi - Kertosono', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:43:09', 1, NULL, NULL, 'Kertosono', 'Ngawi');
--- INSERT INTO `highways` VALUES (14, 'Kertosono - Mojokerto', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:43:09', 1, NULL, NULL, 'Mojokerto', 'Kertosono');
--- INSERT INTO `highways` VALUES (15, 'Mojokerto - Surabaya', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:43:09', 1, NULL, NULL, 'Surabaya', 'Mojokerto');
--- INSERT INTO `highways` VALUES (16, 'Surabaya - Gempol', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:43:09', 1, NULL, NULL, 'Gempol', 'Surabaya');
--- INSERT INTO `highways` VALUES (17, 'Gempol - Pasuruan', '0', '0', '0', '0', '0000-00-00 00:00:00', '2023-04-15 21:46:07', 1, NULL, NULL, 'Pasuruan', 'Gempol');
--- INSERT INTO `highways` VALUES (19, 'Pandaan - Malang', '0', '0', '0', '0', '2022-04-14 13:11:55', '2023-04-15 21:46:07', 1, NULL, NULL, 'Malang', 'Pandaan');
--- INSERT INTO `highways` VALUES (20, 'Medan - Kualanamu - Tebing Tinggi', '0', '0', '0', '0', '2022-04-14 13:21:14', '2023-04-15 21:46:54', 1, NULL, NULL, 'Tebing Tinggi', 'Medan');
--- INSERT INTO `highways` VALUES (21, 'Balikpapan - Samarinda', '0', '0', '0', '0', '2022-04-14 13:21:42', '2023-04-15 21:46:54', 1, NULL, NULL, 'Samarinda', 'Balikpapan');
--- INSERT INTO `highways` VALUES (22, 'Jakarta - Tangerang', '0', '0', '0', '0', '2022-04-14 13:33:53', '2023-04-15 21:46:07', 1, NULL, NULL, 'Tangerang', 'Jakarta');
 
 SET FOREIGN_KEY_CHECKS = 1;

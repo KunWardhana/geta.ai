@@ -38,19 +38,16 @@ class NLSQLQueryEngine(BaseEngine):
         import json
 
         result_strs = []
-        for table_name in list_table:
-            filename=table_name.replace('vw_commando_','')
-            for line in open(f"./lib/few_shot/{filename}.jsonl", "r"):
-                raw_dict = json.loads(line)
-                query = raw_dict["query"]
-                response_dict = raw_dict["response"]
+        for line in open(f"./lib/few_shot/geta_fewshot_example.jsonl", "r"):
+            raw_dict = json.loads(line)
+            query = raw_dict["query"]
+            response_dict = raw_dict["response"]
                 
-                result_str = (
-                    f"Query: {query}\n"
-                    f"Response: {response_dict}"
-                )
-                
-                result_strs.append(result_str)
+            result_str = (
+                f"Query: {query}\n"
+                f"Response: {response_dict}"
+            )
+            result_strs.append(result_str)
                 
         return "\n\n".join(result_strs)
     
@@ -89,3 +86,5 @@ class NLSQLQueryEngine(BaseEngine):
         )
         
         return query_engine
+
+SELECT t.gol1, t.gol2, t.gol3, t.gol4, t.gol5, t.gol6 FROM tbl_master_tarif t WHERE t.nama_asal_gerbang = 'Padalarang' AND t.nama_gerbang = 'Pasteur';
