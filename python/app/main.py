@@ -57,10 +57,20 @@ def test_mysql_connection(query, question):
         raise HTTPException(status_code=500, detail=f"Database error: {err}")
 
 async def llamaindex_stream(question: str) -> AsyncGenerator[str, None]:
+
+    with open ('prompt_history.txt', 'a') as file:
+        file.write("Question : " + question + "\n")
+
     try:
-        response = await llamaindex(question)
+        with open ('prompt_history.txt', 'r') as file:
+            question_prompt = file.read()
         
-        print(response)
+        response = await llamaindex(question_prompt)
+        
+        with open ('prompt_history.txt', 'a') as file:
+            file.write("Prompt : " + str(response) + "\n")
+        
+        # print("Ini adalah : " + response)
 
         for chunk in response.response.split(): 
             yield chunk + " "
