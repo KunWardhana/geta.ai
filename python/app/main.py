@@ -65,6 +65,8 @@ async def llamaindex_stream(question: str) -> AsyncGenerator[str, None]:
         with open ('prompt_history.txt', 'r') as file:
             question_prompt = file.read()
         
+
+        print ("Ini prompt-nya" + question_prompt)
         response = await llamaindex(question_prompt)
         
         with open ('prompt_history.txt', 'a') as file:
@@ -121,30 +123,35 @@ async def fetch_data():
     """
     Fetch data from the API and save it as a CSV file.
     """
-    api_url = "https://api-gateway.jasamarga.co.id/prd/jmclick-ess/faq"
+    BASE_URL = "https://travoy.jasamarga.co.id:3000"
+    api_url =  BASE_URL + "/v4/login"
     headers = {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEyOCwidXNlciI6IjEwNjkxIiwicHJvZmlsZV9pZCI6MTMyNjY3LCJ1c2VybmFtZSI6IjEwNjkxIiwidl91c2VybmFtZSI6IjEwNjkxIiwia2RfY29tcCI6IkpTTVIiLCJrZF9jb21wX2FzYWwiOiJKU01SIiwia2RfY29tcF9wZW51Z2FzYW4iOm51bGwsImtlbG9tcG9rX2phYmF0YW4iOiJOb24gT3BlcmFzaW9uYWwiLCJuYW1hIjoiTU9IQU1BRCBERU5JUyBKVUxJQU5TWUFIIiwidW5pdF9rZXJqYV9pZCI6NDAwMDAwMjAsImtkdW5pdCI6NDAwMDAwMjAsInVuaXQiOiJJbmZvcm1hdGlvbiBUZWNobm9sb2d5IEdyb3VwIiwidXNlcmlkIjoiMTA2OTFKU01SIiwicG9zaXRpb25faWQiOjMwMDExOTE2LCJwaG90byI6Imh0dHBzOi8vY2RuLmphc2FtYXJnYS5jby5pZC9hZ2dyZWdhdG9yLWRhdGEtZGV2L0VtcGxveWVlRmlsZS9Qcm9maWxlLzEwNjkxLnBuZyIsInJvbGUiOm51bGwsImFjY2VzcyI6dHJ1ZSwianRpIjoibzdqeHRpIiwic3ViIjoiMTAuMS4xMi4yNDIiLCJtdWx0aV9yb2xlIjpbXSwiaWF0IjoxNzM1OTY3MjMwLCJleHAiOjE3MzY1NzIwMzB9.AeJ0k_injHzMv-eNNNaKyGkL2V2uiq6hG57_UUtWHCU",
-        "x-api-key": X_API_KEY,
+        "Content-Type": "application/x-www-form-urlencoded"
     }
-    file_path = "faq_data.csv"
+
+    # Body parameters
+    data = {
+        "username": "rahmatisni@gmail.com",
+        "password": "Abc123123",
+    }
     
     try:
-        response = requests.get(api_url, headers=headers)
+        response = requests.post(api_url, data=data, headers=headers)
         response.raise_for_status()
 
         json_data = response.json()
 
-        if 'data' in json_data:
-            data = json_data['data']
+        print("Status Code:", response.status_code)
+        print("Response Body:", response.text)
+
+        if response.status_code == 200:
+            response_json = response.json()
+            access_token = response_json.get("data", {}).get("access_token", "No access token found")
+            print("Access Token:", access_token)
         else:
-            raise ValueError("Unexpected JSON format: 'data' key not found.")
+            print("Failed to get response, Status Code:", response.status_code)
 
-        # Convert JSON 'data' to DataFrame and save to CSV
-        df = pd.json_normalize(data)
-        df.to_csv(file_path, index=False)
-        print(f"Data successfully fetched and saved to {file_path}")
-
-        return {"message": f"Data successfully saved to {file_path}"}
+        return response.text
 
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Error fetching data from API: {e}")
