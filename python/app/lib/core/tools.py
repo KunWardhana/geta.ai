@@ -78,3 +78,29 @@ class ToolCalling:
             verbose=True,
         )
         
+from rapidfuzz import process
+
+class FuzzyMatcher:
+    def __init__(self, location_names):
+        """
+        Initialize with a list of valid location names from the database.
+        """
+        self.location_names = location_names
+
+    def find_closest(self, query: str, threshold=85) -> str:
+        """
+        Find the closest location using fuzzy matching.
+
+        Args:
+            query: User's input location.
+            threshold: Minimum similarity score to accept a match.
+
+        Returns:
+            The corrected location name if a match is found, otherwise the original query.
+        """
+        best_match, score, _ = process.extractOne(query, self.location_names)
+
+        if score > threshold:  # Accept only highly similar matches
+            return best_match
+        return query  # If no match is found, return original input
+

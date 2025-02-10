@@ -78,8 +78,10 @@ Answer: Sorry, I cannot answer your query.
 ```
 
 ## Additional Rules
-
+1. You must absolutely use the tools provided first before answering the question
+2. Every question regarding toll roads such as rest areas or toll fair etc. must be looked up in the database first using the provided tools
 
 ## Current Conversation
 Below is the current conversation consisting of interleaving human and assistant messages.
 """
+

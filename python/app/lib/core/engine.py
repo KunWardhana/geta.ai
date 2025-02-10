@@ -34,26 +34,39 @@ class BaseEngine(ABC):
 class NLSQLQueryEngine(BaseEngine):
     """NL Engine for retrieving and querying SQL table schemas."""
 
+    def __init__(self, llm: OpenAI, sql_database: SQLDatabase, fuzzy_matcher):
+        """
+        Initialize the NLSQL Query Engine with fuzzy matching for location names.
+        """
+        super().__init__(llm)
+        self.sql_database = sql_database
+        self.fuzzy_matcher = fuzzy_matcher
+    
     def few_shot_examples_fn(self, list_table: List[str]):
         import json
 
         result_strs = []
-        for table_name in list_table:
-            filename=table_name.replace('vw_commando_','')
-            for line in open(f"./lib/few_shot/{filename}.jsonl", "r"):
-                raw_dict = json.loads(line)
-                query = raw_dict["query"]
-                response_dict = raw_dict["response"]
+        for line in open(f"./lib/few_shot/geta_fewshot_example.jsonl", "r"):
+            raw_dict = json.loads(line)
+            query = raw_dict["query"]
+            response_dict = raw_dict["response"]
                 
-                result_str = (
-                    f"Query: {query}\n"
-                    f"Response: {response_dict}"
-                )
-                
-                result_strs.append(result_str)
+            result_str = (
+                f"Query: {query}\n"
+                f"Response: {response_dict}"
+            )
+            result_strs.append(result_str)
                 
         return "\n\n".join(result_strs)
     
+    async def preprocess_query(self, user_query: str) -> str:
+        """
+        Preprocess user query by replacing misspelled location names using fuzzy matching.
+        """
+        words = user_query.split()
+        corrected_words = [self.fuzzy_matcher.find_closest(word) for word in words]
+        return " ".join(corrected_words)
+
     @lru_cache(maxsize=128)
     async def create_engine(
         self,
@@ -73,7 +86,7 @@ class NLSQLQueryEngine(BaseEngine):
         query_engine = NLSQLTableQueryEngine(
             sql_database=database, 
             tables=list_table,
-            verbose=False,
+            verbose=True,
             markdown_respons=True,
             synthesize_response=True,
             refresh_schema=False,
@@ -81,11 +94,12 @@ class NLSQLQueryEngine(BaseEngine):
         )
         
         generate_examples = self.few_shot_examples_fn(list_table)
-        refine_template_prompt = REFINE_SQL_TEXT_TO_SQL_PROMPT.replace('[few_shot_examples]',generate_examples)
-        
-        custom_prompt = PromptTemplate(template=refine_template_prompt)   
+        refine_template_prompt = REFINE_SQL_TEXT_TO_SQL_PROMPT.replace('[few_shot_examples]', generate_examples)
+
+        custom_prompt = PromptTemplate(template=refine_template_prompt)
         query_engine.update_prompts(
             {"sql_retriever:text_to_sql_prompt": custom_prompt}
         )
-        
+
+        query_engine.preprocess_query = self.preprocess_query
         return query_engine

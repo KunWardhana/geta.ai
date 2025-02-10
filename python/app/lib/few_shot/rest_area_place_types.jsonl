@@ -1,0 +1,1 @@
+{"query": "please give detail about product id 10500183", "response": "SELECT * FROM `gcp-hci-dwh.ai_keti_dataset.vw_product_catalogue_sales_qty` WHERE product_id = '10500183';"}
